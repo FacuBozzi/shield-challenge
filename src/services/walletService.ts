@@ -1,4 +1,4 @@
-import { Prisma } from "../../generated/prisma";
+import { Prisma } from "../../generated/prisma/client";
 import prisma from "../lib/prisma";
 import { conflictError, notFoundError } from "../errors/AppError";
 
@@ -12,7 +12,7 @@ const handlePrismaError = (error: unknown) => {
   if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
     throw conflictError("Wallet address already exists");
   }
-  throw error;
+  throw error instanceof Error ? error : new Error("Unknown database error");
 };
 
 const ensureWallet = async (userId: number, walletId: number) => {

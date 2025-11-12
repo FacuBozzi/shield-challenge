@@ -8,6 +8,10 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsup src/server.ts --format esm,cjs --dts --clean",
     "start": "node dist/server.js",
+    "db:migrate": "prisma migrate dev",
+    "db:push": "prisma db push",
+    "db:generate": "prisma generate",
+    "seed": "tsx prisma/seed.ts",
     "lint": "eslint .",
     "test": "vitest",
     "test:cov": "vitest run --coverage"
