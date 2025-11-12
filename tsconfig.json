@@ -9,7 +9,7 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "outDir": "dist",
-    "types": ["node"]
+    "types": ["node", "vitest/globals"]
   },
-  "include": ["src", "generated/prisma"]
+  "include": ["src", "generated/prisma", "tests"]
 }

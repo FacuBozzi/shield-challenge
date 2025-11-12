@@ -89,12 +89,19 @@ Prisma schema + migrations live under `prisma/`. `prisma/seed.ts` can bootstrap 
 
 ## Testing & linting
 
-The repo uses ESLint and Vitest. Sample commands:
+Automated tests live under `tests/` (`tests/unit` for schema/business rules, `tests/e2e` for full HTTP flows via Supertest).  
+Both suites hit a real PostgreSQL instance, so make sure the database is running and migrated before executing them:
 
 ```bash
-pnpm lint
-pnpm test
+docker compose up -d db                           # or provide your own Postgres
+( set -a; source .env; pnpm db:migrate; set +a )  # apply schema using the same env as the app
+# Optional: point tests to a dedicated database via TEST_DATABASE_URL
+
+pnpm test                                         # unit + end-to-end suites (Vitest)
+pnpm lint                                         # ESLint
 ```
+
+> Tip: Export `.env` variables (or create `.env.test`) so `pnpm test` can see `DATABASE_URL`, `JWT_SECRET`, etc. When `TEST_DATABASE_URL` is defined it overrides `DATABASE_URL` only for the test run, keeping your dev data intact.
 
 ## Troubleshooting
 
