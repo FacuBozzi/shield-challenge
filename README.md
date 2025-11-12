@@ -11,7 +11,7 @@ _Note_: this challenge was developed solo on `main`; in a collaborative setting 
 
 ## Environment
 
-Copy `.env` (already tracked) or export the variables before running the API.
+The repo ships with `.env.example`. Copy it to `.env` (gitignored) or export the variables manually before running the API.
 
 | Variable | Description | Example |
 | --- | --- | --- |
