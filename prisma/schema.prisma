@@ -21,6 +21,8 @@ model User {
   wallets   Wallet[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("users")
 }
 
 model Wallet {
@@ -34,4 +36,5 @@ model Wallet {
   updatedAt DateTime @updatedAt
 
   @@index([userId])
+  @@map("wallets")
 }
