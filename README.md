@@ -53,6 +53,7 @@ All responses are JSON. Endpoints that are marked 🔒 require an `Authorization
 - `openapi.yaml` contains the full OpenAPI 3.0 specification. Import it into Swagger UI/Stoplight/Postman to inspect the contract.
 - `postman/Shield Challenge API.postman_collection.json` is a ready-to-use Postman collection derived from the spec.
 - `TESTS.md` mirrors the flows with concrete cURL commands if you prefer manual testing from the terminal.
+- After signing in, copy the `token` from the response and reuse it as `Authorization: Bearer <token>` (set it in Postman or export `TOKEN=$(...)` in your shell for CURL requests).
 
 ### Authentication
 
