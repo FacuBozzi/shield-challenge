@@ -35,6 +35,7 @@ pnpm db:migrate
 # (Optional) Seed a default user
 pnpm seed                # uses env defaults
 SEED_USER_EMAIL=me@example.com SEED_USER_PASSWORD=Str0ngPass pnpm seed
+# (passwords must be at least 8 characters; the seed command enforces this)
 
 # Start the API
 pnpm dev                 # watch mode

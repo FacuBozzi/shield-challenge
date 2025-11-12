@@ -1,10 +1,14 @@
-import { PrismaClient } from '../generated/prisma/client';
-import { hashPassword } from '../src/utils/password';
+import { PrismaClient } from "../generated/prisma/client";
+import { credentialsSchema } from "../src/schemas/authSchemas";
+import { hashPassword } from "../src/utils/password";
 
 const prisma = new PrismaClient();
 
-const email = process.env.SEED_USER_EMAIL ?? 'user@example.com';
-const password = process.env.SEED_USER_PASSWORD ?? 'useruser';
+const credentials = credentialsSchema.parse({
+  email: process.env.SEED_USER_EMAIL ?? "user@example.com",
+  password: process.env.SEED_USER_PASSWORD ?? "ChangeMe123!",
+});
+const { email, password } = credentials;
 
 async function main() {
   const user = await prisma.user.upsert({
