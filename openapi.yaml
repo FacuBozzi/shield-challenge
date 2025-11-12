@@ -1,0 +1,299 @@
+openapi: 3.1.3
+info:
+  title: Shield Challenge API
+  version: 1.0.0
+  description: >
+    REST API for authenticating users and managing blockchain wallets. Built with Express,
+    TypeScript, Prisma, and PostgreSQL.
+servers:
+  - url: http://localhost:3000
+    description: Local developer server
+tags:
+  - name: Auth
+  - name: Wallets
+paths:
+  /health:
+    get:
+      summary: Readiness probe
+      description: Returns service health.
+      tags: [Misc]
+      responses:
+        '200':
+          description: Service is healthy.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+  /signin:
+    post:
+      summary: Sign in
+      description: Returns a JWT for a valid user.
+      operationId: signIn
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignInRequest'
+      responses:
+        '200':
+          description: Authenticated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignInResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /signout:
+    post:
+      summary: Sign out
+      description: Revokes the current JWT until it expires.
+      operationId: signOut
+      tags: [Auth]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successfully signed out.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignOutResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /wallets:
+    get:
+      summary: List wallets
+      description: Returns all wallets for the authenticated user.
+      operationId: listWallets
+      tags: [Wallets]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Wallets for the user.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Wallet'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      summary: Create wallet
+      description: Creates a wallet for the authenticated user.
+      operationId: createWallet
+      tags: [Wallets]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WalletRequest'
+      responses:
+        '201':
+          description: Wallet created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wallet'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          description: Wallet address already exists.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /wallets/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+    get:
+      summary: Get wallet
+      description: Returns the wallet if it belongs to the authenticated user.
+      operationId: getWallet
+      tags: [Wallets]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Wallet found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wallet'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      summary: Update wallet
+      description: Updates wallet metadata for the authenticated user.
+      operationId: updateWallet
+      tags: [Wallets]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WalletRequest'
+      responses:
+        '200':
+          description: Wallet updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wallet'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: Wallet address already exists.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      summary: Delete wallet
+      description: Deletes the specified wallet.
+      operationId: deleteWallet
+      tags: [Wallets]
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: Wallet deleted.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: ok
+    SignInRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+          example: user@example.com
+        password:
+          type: string
+          format: password
+          minLength: 8
+          example: ChangeMe123!
+    SignInResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: JWT access token.
+        expiresIn:
+          type: integer
+          description: Token lifetime in seconds.
+          example: 3600
+        user:
+          $ref: '#/components/schemas/User'
+    SignOutResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        email:
+          type: string
+          format: email
+    Wallet:
+      type: object
+      properties:
+        id:
+          type: integer
+        tag:
+          type: string
+          nullable: true
+        chain:
+          type: string
+        address:
+          type: string
+        userId:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    WalletRequest:
+      type: object
+      required: [chain, address]
+      properties:
+        tag:
+          type: string
+          nullable: true
+        chain:
+          type: string
+          example: Ethereum
+        address:
+          type: string
+          example: 0x1234567890abcdef1234
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        details:
+          nullable: true
+  responses:
+    BadRequest:
+      description: Invalid payload.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Authentication required or token invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: Resource not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'

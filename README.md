@@ -48,6 +48,11 @@ pnpm build && pnpm start
 
 All responses are JSON. Endpoints that are marked 🔒 require an `Authorization: Bearer <token>` header.
 
+### OpenAPI & Postman Collection
+
+- `openapi.yaml` contains the full OpenAPI 3.0 specification. Import it into Swagger UI/Stoplight/Postman to inspect the contract.
+- `postman/Shield Challenge API.postman_collection.json` is a ready-to-use Postman collection derived from the spec.
+
 ### Authentication
 
 | Method | Path | Body | Notes |
@@ -89,7 +94,7 @@ Prisma schema + migrations live under `prisma/`. `prisma/seed.ts` can bootstrap 
 
 ## Testing & linting
 
-Automated tests live under `tests/` (`tests/unit` for schema/business rules, `tests/e2e` for full HTTP flows via Supertest).  
+Automated tests live under `tests/` (`tests/unit` for schema/business rules, `tests/e2e` for full HTTP flows via Supertest).
 Both suites hit a real PostgreSQL instance, so make sure the database is running and migrated before executing them:
 
 ```bash
