@@ -8,20 +8,30 @@ const credentials = credentialsSchema.parse({
   email: process.env.SEED_USER_EMAIL ?? "user@example.com",
   password: process.env.SEED_USER_PASSWORD ?? "ChangeMe123!",
 });
+
 const { email, password } = credentials;
 
 async function main() {
+  const hashedPassword = await hashPassword(password);
+
+  const existing = await prisma.user.findUnique({ where: { email } });
   const user = await prisma.user.upsert({
     where: { email },
-    update: {},
+    update: {
+      password: hashedPassword,
+    },
     create: {
       email,
-      password: await hashPassword(password),
+      password: hashedPassword,
     },
   });
 
   // eslint-disable-next-line no-console
-  console.log(`Seeded user ${user.email} with password ${password}`);
+  if (existing) {
+    console.log(`Updated password for existing user ${user.email}`);
+  } else {
+    console.log(`Seeded user ${user.email} with password ${password}`);
+  }
 }
 
 main()
