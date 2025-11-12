@@ -1,6 +1,7 @@
 # Shield Challenge API
 
 Backend API for authenticating users and managing their wallets. Built with Express, TypeScript, Prisma, and PostgreSQL.
+_Note_: this challenge was developed solo on `main`; in a collaborative setting I would follow the usual PR flow (feature branches such as `feat/<name>`, etc etc.).
 
 ## Prerequisites
 
