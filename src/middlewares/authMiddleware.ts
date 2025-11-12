@@ -19,7 +19,7 @@ export const authenticate = (req: Request, _res: Response, next: NextFunction) =
     const payload = verifyJwt(token, env.jwtSecret);
     req.user = { ...payload, token };
     return next();
-  } catch (error) {
+  } catch {
     return next(unauthorizedError("Invalid or expired token"));
   }
 };

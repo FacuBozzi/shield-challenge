@@ -26,7 +26,6 @@ async function main() {
     },
   });
 
-  // eslint-disable-next-line no-console
   if (existing) {
     console.log(`Updated password for existing user ${user.email}`);
   } else {
@@ -36,8 +35,7 @@ async function main() {
 
 main()
   .catch((error) => {
-    // eslint-disable-next-line no-console
-    console.error('Failed to seed database', error);
+    console.error("Failed to seed database", error);
     process.exit(1);
   })
   .finally(async () => {

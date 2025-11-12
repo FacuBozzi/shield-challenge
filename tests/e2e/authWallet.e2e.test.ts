@@ -133,7 +133,7 @@ describe("Auth & Wallet E2E", () => {
   });
 
   it("prevents two users from sharing the same wallet address", async () => {
-    const { user: firstUser, token: firstToken } = await authenticate();
+    const { token: firstToken } = await authenticate();
     const address = "0xabcdefabcdefabcdef12";
 
     const firstCreate = await request(app)
